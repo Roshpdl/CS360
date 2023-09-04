@@ -26,9 +26,15 @@ function flagGeometry () {
 
 // ====================================================================
 
-// white material to use for all the faces of the flag
-var flagMaterial = new THREE.MeshBasicMaterial({color: new THREE.Color("white"),
-                                               side: THREE.DoubleSide});
+// material object to use for all the faces of the flag
+var flagMaterial = [
+  new THREE.MeshBasicMaterial({color: new THREE.Color(0x003F87), side: THREE.DoubleSide} ),
+  new THREE.MeshBasicMaterial({color: new THREE.Color(0xFCD856), side: THREE.DoubleSide} ),
+  new THREE.MeshBasicMaterial({color: new THREE.Color(0xD62828), side: THREE.DoubleSide} ),
+  new THREE.MeshBasicMaterial({color: new THREE.Color(0xD62828), side: THREE.DoubleSide} ),
+  new THREE.MeshBasicMaterial({color: new THREE.Color(0xFFFFFF), side: THREE.DoubleSide} ),
+  new THREE.MeshBasicMaterial({color: new THREE.Color(0x007A3D), side: THREE.DoubleSide} ),
+]
 
 // create a Scene object
 var scene = new THREE.Scene();
@@ -37,7 +43,7 @@ var scene = new THREE.Scene();
 var flagGeom = flagGeometry();
 
 // set the color for specific triangle faces
-
+TW.setMaterialForFaces11(flagGeom);
 
 // create a mesh for the flag
 var flagMesh = new THREE.Mesh(flagGeom, flagMaterial);

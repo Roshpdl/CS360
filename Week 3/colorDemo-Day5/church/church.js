@@ -48,8 +48,8 @@ var barnGeom = TW.createBarn( barnWidth, barnHeight, barnDepth );
 var steepleGeom = createSteeple(steepleWidth,steepleHeight);
 
 // create the barn and steeple meshes
-var barnMesh = TW.createMesh(barnGeom);
-var steepleMesh = TW.createMesh(steepleGeom);
+// var barnMesh = TW.createMesh(barnGeom);
+// var steepleMesh = TW.createMesh(steepleGeom);
 
 // replace the above two code statements with code to do the following:
 
@@ -62,6 +62,28 @@ var steepleMesh = TW.createMesh(steepleGeom);
        // create yellow material for the steeple
 
        // create the steeple mesh from its geometry and material
+
+var barnMaterial = [
+    new THREE.MeshBasicMaterial({color: new THREE.Color("white")}),
+    new THREE.MeshBasicMaterial({color: new THREE.Color("brown")}),
+]
+
+var steepleMaterial = [
+    new THREE.MeshBasicMaterial({color: new THREE.Color("yellow")}),
+]
+
+//assign the sides to white color
+for (var i = 0; i < 6; i++) {
+    barnGeom.faces[i].materialIndex = 0;
+}
+
+//assign the roof to brown color
+for (var i = 6; i < 10; i++) {
+    barnGeom.faces[i].materialIndex = 1;
+}
+
+var barnMesh = new THREE.Mesh(barnGeom, barnMaterial);
+var steepleMesh = new THREE.Mesh(steepleGeom, steepleMaterial);
 
 // position the steeple mesh at the top of the barn
 steepleMesh.position.set(barnWidth/2,

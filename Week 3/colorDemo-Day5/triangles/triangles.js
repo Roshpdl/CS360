@@ -33,9 +33,15 @@ function triGeometry () {
 
 // ====================================================================
 
-
 // insert code to construct an array of materials with different colors,
 // to use for the four faces of the triangles geometry
+
+var triMaterials = [
+  new THREE.MeshBasicMaterial( {color: new THREE.Color("red"), side: THREE.DoubleSide} ),
+  new THREE.MeshBasicMaterial( {color: new THREE.Color("yellow"), side: THREE.DoubleSide} ),
+  new THREE.MeshBasicMaterial( {color: new THREE.Color("blue"), side: THREE.DoubleSide} ),
+  new THREE.MeshBasicMaterial( {color: new THREE.Color("pink"), side: THREE.DoubleSide} ),
+]
 
 
 // create a Scene object
@@ -46,7 +52,21 @@ var triGeom = triGeometry();
 
 // replace this statement with code to use your new materials
 // to color the faces of the triangle geometry
-var triMesh = TW.createMesh(triGeom);
+triGeom.faces[0].materialIndex = 0;
+triGeom.faces[1].materialIndex = 1;
+triGeom.faces[2].materialIndex = 2;
+triGeom.faces[3].materialIndex = 3;
+
+TW.setMaterialForFaces(triGeom, 2, 0);
+TW.setMaterialForFaces(triGeom, 0, 1);
+TW.setMaterialForFaces(triGeom, 1, 2);
+TW.setMaterialForFaces(triGeom, 3, 3);
+
+//shortcut
+//TW.setMaterialForFaces11(triGeom2); 
+
+
+var triMesh = new THREE.Mesh(triGeom, triMaterials);
 
 // add the Mesh to the scene
 scene.add(triMesh);                    
