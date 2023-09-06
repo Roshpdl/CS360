@@ -52,15 +52,10 @@ var triGeom = triGeometry();
 
 // replace this statement with code to use your new materials
 // to color the faces of the triangle geometry
-triGeom.faces[0].materialIndex = 0;
-triGeom.faces[1].materialIndex = 1;
+triGeom.faces[0].materialIndex = 0; //equivalent: TW.setMaterialForFace(triGeom, 0, 0);
+triGeom.faces[1].materialIndex = 1; //equivalent: TW.setMaterialForFace(triGeom, 1, 1);
 triGeom.faces[2].materialIndex = 2;
 triGeom.faces[3].materialIndex = 3;
-
-TW.setMaterialForFaces(triGeom, 2, 0);
-TW.setMaterialForFaces(triGeom, 0, 1);
-TW.setMaterialForFaces(triGeom, 1, 2);
-TW.setMaterialForFaces(triGeom, 3, 3);
 
 //shortcut
 //TW.setMaterialForFaces11(triGeom2); 
