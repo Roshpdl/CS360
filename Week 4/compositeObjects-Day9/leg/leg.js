@@ -7,23 +7,38 @@ function makeLeg(scene,parameters) {
      * respectively, which the GUI lets you control. The naming isn't
      * perfect, but it was the best I could think of. */
 
+    var shoe = TW.createMesh(new THREE.CylinderGeometry(2, 1, parameters.footLength));
+
     foot = new THREE.Object3D();
     foot.name = "foot";
-    var shoe = TW.createMesh(new THREE.CylinderGeometry(2, 1, parameters.footLength));
     foot.add(shoe);
+    shoe.position.x = parameters.footLength/2;
+    shoe.rotation.z = Math.PI/2;
+
+    foot.rotation.z = parameters.ankleRotation;
+
+    var calf = TW.createMesh(new THREE.CylinderGeometry(3, 2, parameters.calfLength));
 
     lowerleg = new THREE.Object3D();
     lowerleg.name = "lowerleg";
-    var calf = TW.createMesh(new THREE.CylinderGeometry(3, 2, parameters.calfLength));
     lowerleg.add(calf);
+    calf.position.y = -parameters.calfLength/2;
+    foot.position.y = -parameters.calfLength;
+    lowerleg.add(foot);
+
+    lowerleg.rotation.z = parameters.kneeRotation;
+
+    var thigh = TW.createMesh(new THREE.CylinderGeometry(5, 4, parameters.thighLength));
 
     leg = new THREE.Object3D();
     leg.name = "leg";
-    var thigh = TW.createMesh(new THREE.CylinderGeometry(5, 4, parameters.thighLength));
     leg.add(thigh);
+    thigh.position.y = -parameters.thighLength/2;
+    lowerleg.position.y = -parameters.thighLength;
+    leg.add(lowerleg);
 
-    scene.add(foot); 
-    scene.add(lowerleg); 
+    leg.rotation.z = parameters.hipRotation;
+
     scene.add(leg); 
 }
 
@@ -57,9 +72,9 @@ function redraw() {
     var foot = scene.getObjectByName("foot",true);
     var lowerleg = scene.getObjectByName("lowerleg",true);
     var leg = scene.getObjectByName("leg",true);
-    foot.rotation.z = parameters.ankleRotation;
+        foot.rotation.z = parameters.ankleRotation;
     lowerleg.rotation.z = parameters.kneeRotation;
-    leg.rotation.z = parameters.hipRotation;
+         leg.rotation.z = parameters.hipRotation;
     TW.render();
 }
 
