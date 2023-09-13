@@ -44,11 +44,11 @@ barn2 = barns[1];
 barn3 = barns[2];
 
 //barn1 position
-barn1.position.set(40, 0, barnDimensions.barnDepth);
+barn1.position.set(50, 0, barnDimensions.barnDepth);
 
 //barn2 position
 barn2.rotation.y = -Math.PI/4;
-barn2.position.set(100  - barnDimensions.barnDepth/2, 0, 50);
+barn2.position.set(100 - barnDimensions.barnDepth/2, 0, 50);
 
 //barn3 position
 barn3.rotation.y = -Math.PI/2;
