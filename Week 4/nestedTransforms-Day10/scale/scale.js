@@ -26,9 +26,7 @@ function createCone (height) {
 // two cones at its ends
 
 function createBeam (size, angle) {
-
-
-
+    
 }
 
 // ===============================================================================
@@ -55,8 +53,6 @@ function createScale (size, angle) {
 
     // add code to call createBeam() and add the beam object to scaleObj
     // at the top of the vertical pole
-
-
 
     // ===============================
 
