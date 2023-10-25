@@ -3,14 +3,22 @@ var scene = new THREE.Scene();
 
 // ====================================================================
 
-// basic materials created for the lamp parts and rug
-
-// *** MODIFY TO USE PHONG MATERIALS INSTEAD ***
+// Phong materials created for the lamp parts and rug
 
 var colorMaterials = [new THREE.MeshPhongMaterial( {color: new THREE.Color("black"),
+                                                    specular: new THREE.Color("white"),
+                                                    shininess: 10,
+                                                    flatShading: THREE.FlatShading,
                                                     side: THREE.DoubleSide} ), 
-                      new THREE.MeshPhongMaterial( {color: new THREE.Color("brown")} ),
-                      new THREE.MeshPhongMaterial( {color: new THREE.Color("green")} ) ];
+                      new THREE.MeshPhongMaterial( {color: new THREE.Color("brown"),
+                                                    specular: new THREE.Color("white"),
+                                                    shininess: 10,
+                                                    flatShading: THREE.FlatShading} ),
+                      new THREE.MeshPhongMaterial( {color: new THREE.Color("green"),
+                                                    specular: new THREE.Color("white"),
+                                                    shininess: 10,
+                                                    flatShading: THREE.FlatShading,
+                                                    side: THREE.DoubleSide} ) ];
 
 // the luxo() function creates a container object, adds the base, arms, cone,
 // and bulb to this container, and returns the object
@@ -58,22 +66,20 @@ function luxo () {
     return lamp;
 }
 
-// the addLuxoBulb() adds a spotlight to the scene to simulate the light radiating 
+// addLuxoBulb() adds a spotlight to the scene to simulate the light radiating 
 // from the bulb of a luxo lamp - it's special-purpose, assuming that the lamp is
 // positioned on the rug at (X,Z) coordinates (posX,posZ), is upright and rotated 
 // by angleY around the Y axis, and has uniform scale
 
-// *** COMPLETE INPUTS TO THE THREE.SpotLight() CONSTRUCTOR AND MODIFY POSITION
-// OF bulbTarget ***
-
 function addLuxoBulb (angleY, scale, posX, posZ) {
-    var bulb = new THREE.SpotLight( 0 );
+    var spotAngle = Math.atan(0.5);   // true angle for cone with radius 40, height 80
+    var bulb = new THREE.SpotLight(new THREE.Color("white"), 1.5, 0, spotAngle, 1, 1);
     // height of spotlight and distance from origin of lamp to target on ground
     var dist = 165*scale;
     bulb.position.set(posX, dist, posZ);     // spotlight positioned at tip of cone
     var bulbTarget = new THREE.Object3D();
     // target positioned on ground, at distance of "dist" from origin of lamp
-    bulbTarget.position.set(0, 0, 0);
+    bulbTarget.position.set(posX+(dist*Math.cos(angleY)), 0, posZ-(dist*Math.sin(angleY)));
     bulb.target = bulbTarget;
     scene.add(bulb);
     scene.add(bulb.target);
@@ -88,17 +94,17 @@ scene.add(rug);
 // create two luxo lamps with the desired position, rotation, and scale,
 // and with a spotlight for the bulb added to the scene
 
-// *** ADD CALLS TO THE addLuxoBulb() FUNCTION TO ADD A SPOTLIGHT FOR EACH LAMP ***
-
 var lamp1 = luxo();
 lamp1.position.set(60,0,60);
 scene.add(lamp1);
+addLuxoBulb(0,1,60,60);
 
 var lamp2 = luxo();
 lamp2.position.set(160,0,60);
 lamp2.rotation.set(0,Math.PI,0);
 lamp2.scale.set(0.5,0.5,0.5);
 scene.add(lamp2);
+addLuxoBulb(Math.PI,0.5,160,60);
 
 // add ambient light source
 
