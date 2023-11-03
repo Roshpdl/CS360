@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Plane Buffy</title>
+<style>      
+      /* feel free to style the canvas any way you want. If you want it to
+      use the entire window, set width: 100% and height: 100%. */
+      canvas {
+          display: inline;
+          width: 60%;
+          height: 500px;
+      }
+</style>
+<script src="../lib/three-r95.all.js"></script>
+<script src="../lib/OrbitControls-r95.js"></script>
+<script src="../lib/tw.js"></script>
+<script src="../lib/dat.gui-r95.js"></script>
+</head>
+<body>
+<h1>Buffy Plane</h1>
+<p>This demo shows a texture-mapping of the following image onto a
+    simple <code>THREE.PlaneGeometry</code>, but with an underlying
+      color. Use the GUI at the above right to change the color.
+    
+    <p>
+    <img alt="Buffy" src="buffy.gif"/>
+    <span id="color" style="width:300px;height:220px;display:inline-block;background-color:#6fca74"></span>
+    </p>
+<script src="buffy-color.js"></script>
+</body>
+</html>

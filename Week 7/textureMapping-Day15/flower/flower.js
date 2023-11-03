@@ -13,7 +13,7 @@ function displayPanels (texture) {
 
     // repeat texture mapping on right panel
     var planeMeshR = planeMesh.clone();
-    var dist = 5//*Math.cos(Math.PI/4);
+    var dist = 5 //*Math.cos(Math.PI/4);
     planeMeshR.position.set(5+dist, 0, dist);
     planeMeshR.rotation.y = -Math.PI/4;
     scene.add(planeMeshR);
@@ -33,7 +33,7 @@ TW.mainInit(renderer,scene);
 
 var state = TW.cameraSetup(renderer,
                            scene,
-                           {minx: -8, maxx: 8,
+                           {minx: -20, maxx: 20,
                             miny: -5, maxy: 5,
                             minz: 0, maxz: 8});
 
