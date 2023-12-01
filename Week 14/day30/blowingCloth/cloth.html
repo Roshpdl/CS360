@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Simple Cloth Animation</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+    </style>
+  </head>
+
+  <body>
+    <div id="info">Simple Cloth Simulation<br/>
+      Verlet integration with constraints relaxation<br/>
+      The red arrow points where the wind is going</br>
+      Toggle: <a onclick="rotate = !rotate;">Camera</a> |
+      <a onclick="wind = !wind;">Wind</a> |
+      <a onclick="sphere.visible = !sphere.visible;">Ball</a> |
+      <a onclick="togglePins();">Pins</a>
+    </div>
+
+<script src="../lib/three-r67.min.js"></script>
+<script src="../lib/dat.gui.min.js"></script>
+<script src="cloth.js"></script>
+<script src="sim.js"></script>
+
+</body>
+</html>

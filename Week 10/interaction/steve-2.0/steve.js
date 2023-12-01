@@ -26,7 +26,7 @@ var dx = .07; //this is the amount that the rotation of his arms and legs rotate
 
 var w = 20; //the total width of steve
 var h = 40; //the total height of steve
-var d = 10; //the total depth of steve
+var d = 10; //the total depth of steve1``
 
     
 /**the following four variables are like containers to hold a collection
@@ -186,6 +186,7 @@ function walk(){
     armL .rotation.x = -rotationX;  
     
 }
+
 //camera.lookAt(steve.position);
         
 //determines which key has been pressed and updates the direction vector accordingly

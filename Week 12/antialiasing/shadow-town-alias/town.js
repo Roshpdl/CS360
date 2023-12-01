@@ -1,12 +1,19 @@
 var scene = new THREE.Scene();
 
-var renderer = new THREE.WebGLRenderer();
+// position of sun adjusted with GUI
+var params = { xsun: 5,
+               ysun: 10,
+               zsun: -2 }
+
+// enable use of a shadow map by the renderer
+var renderer = new THREE.WebGLRenderer({antialias: true});
+renderer.shadowMap.enabled = true;
 
 TW.mainInit(renderer,scene);
 
 TW.cameraSetup(renderer, scene,
                {minx: -10, maxx: 10,
-                miny: -8, maxy: 12,
+                miny: 0, maxy: 6,
                 minz: -10, maxz: 10});
 
 // used for tree trunk and sign
@@ -14,21 +21,25 @@ var brownMat = new THREE.MeshBasicMaterial({color: THREE.ColorKeywords.brown});
 
 // createTree() creates and returns a THREE.Object3D that is an instance of a tree, 
 // with its origin at the center of the base of the trunk, and adds it to the scene
+// individual cone and trunk meshes can cast shadows
 function createTree (trunkRadius, trunkHeight, coneRadius, coneHeight) {
     var tree = new THREE.Object3D();
     var cone = new THREE.Mesh(new THREE.ConeGeometry(coneRadius,coneHeight),
                               new THREE.MeshBasicMaterial({color: THREE.ColorKeywords.darkgreen}));
     cone.position.y = coneHeight/2+trunkHeight;
+    cone.castShadow = true;
     tree.add(cone);
     var trunk = new THREE.Mesh(new THREE.CylinderGeometry(trunkRadius,trunkRadius,trunkHeight),
                                brownMat); 
     trunk.position.y = trunkHeight/2;
+    trunk.castShadow = true;
     tree.add(trunk);
     return tree;
 }
 
 // createSnowperson() creates and returns a THREE.Object3D that is an instance of a snowperson, 
 // with its origin at the center of its base, and adds it to the scene
+// individual snowball meshes can cast shadows
 function createSnowperson (radiusBot) {
    var snowPerson = new THREE.Object3D();
    var radiusMid = 0.8*radiusBot;
@@ -40,23 +51,29 @@ function createSnowperson (radiusBot) {
    snowBot.position.y = radiusBot;
    snowMid.position.y = 2*radiusBot + radiusMid;
    snowTop.position.y = 2*radiusBot + 2*radiusMid + radiusTop;
+   snowBot.castShadow = true;
+   snowMid.castShadow = true;
+   snowTop.castShadow = true;
    snowPerson.add(snowBot);
    snowPerson.add(snowMid);
    snowPerson.add(snowTop);
    return snowPerson;
 }
 
-// add three houses (solid color barns) to the scene
+// add three houses (solid color barns) to the scene that can cast a shadow
 var house1 = TW.createBarnSolidColor(2,3,3,0xff0000);
 house1.position.set(-7,0,4);
+house1.castShadow = true;
 scene.add(house1);
 
 var house2 = TW.createBarnSolidColor(2,3,3,0x00ff00);
 house2.position.set(-1,0,-4);
+house2.castShadow = true;
 scene.add(house2);
 
 var house3 = TW.createBarnSolidColor(2,3,3,0x0000ff);
 house3.position.set(5,0,3);
+house3.castShadow = true;
 scene.add(house3);
 
 // add three trees to the scene
@@ -85,95 +102,58 @@ var snow3 = createSnowperson(0.4);
 snow3.position.set(-5,0,6);
 scene.add(snow3);
 
-// add a brown sign to the scene
+// add a brown sign to the scene that can cast a shadow
 var sign = new THREE.Mesh(new THREE.BoxGeometry(4,1,1), brownMat);
 sign.position.set(-2,2,0);
+sign.castShadow = true;
 scene.add(sign);
 var signPost = new THREE.Mesh(new THREE.BoxGeometry(0.5,2,0.5), brownMat);
 signPost.position.set(-2,1,0);
+signPost.castShadow = true;
 scene.add(signPost);
 
-// add a flat ground with snow
-var circle = new THREE.Mesh(new THREE.CircleGeometry(8.7,32),
-                            new THREE.MeshBasicMaterial({color: 0xffffff}));
+// add a flat ground with snow that can receive shadows
+var circle = new THREE.Mesh(new THREE.CircleGeometry(10,32),
+                            new THREE.MeshPhongMaterial({color: 0xffffff}));
 circle.rotation.x = -Math.PI/2;
+circle.receiveShadow = true;
 scene.add(circle);
 
-
-// ADD A SHINY, TRANSPARENT GLOBE AROUND THE SCENE
-
-// ADD A BASE TO HOLD THE GLOBE 
-
-// ADD A BASE OF SNOW TO THE BOTTOM PART OF THE GLOBE
-
-
-// add some lights to the scene
+// add ambient light to the scene
 var ambLight = new THREE.AmbientLight(0xffffff, 0.8);
 scene.add(ambLight);
 
-var spotLight = new THREE.SpotLight(0xffffff, 1, 0, Math.PI/30, 1);
-spotLight.position.set(10,20,25);
-scene.add(spotLight);
+// add a spotlight that can cast shadows
+var light = new THREE.SpotLight();
+light.position.set(5,10,-2);
+light.castShadow = true;
+light.shadow.mapSize.width = 2048;
+light.shadow.mapSize.height = 2048;
+scene.add(light);
 
-var directLight = new THREE.DirectionalLight(0xffffff, 0.5);
-directLight.position.set(-20,30,10);
-scene.add(directLight);
+// place a yellow sphere in the scene at the location of the spotlight
+var lightPos = new THREE.Mesh(new THREE.SphereGeometry(1),
+                              new THREE.MeshBasicMaterial({color: 0xffff00}));
+lightPos.position.set(5,10,-2);
+scene.add(lightPos);
 
-// addSnow() adds "numFlakes" snowflakes to a scene, randomly positioned within 
-// a sphere of the input radius, shifted vertically by the input yshift
-function addSnow (numFlakes, radius, yshift) {
-   var x, y, z, keepgoing, snowflake;
-   var snow = new THREE.MeshBasicMaterial({color: 0xffffff});
-   var scale = radius/0.5;    // adjust coordinates to size of sphere
-   for (var i = 0; i < numFlakes; i++) {
-      keepgoing = true;
-      while (keepgoing) {
-         x = Math.random()-0.5;
-         y = Math.random()-0.5;
-         z = Math.random()-0.5;
-         if (x*x + y*y + z*z < 0.25) {
-            keepgoing = false;
-            snowflake = new THREE.Mesh(new THREE.SphereGeometry(0.1),snow);
-            snowflake.position.set(scale*x, scale*y+yshift, scale*z);
-            scene.add(snowflake);
-         }
-      }
-   }
-}
+function shiftSun () {
+   scene.remove(light);
+   scene.remove(lightPos);
+   light = new THREE.SpotLight();
+   light.position.set(params.xsun, params.ysun, params.zsun);
+   light.castShadow = true;
+   lightPos = new THREE.Mesh(new THREE.SphereGeometry(1),
+                             new THREE.MeshBasicMaterial({color: 0xffff00}));
+   lightPos.position.set(params.xsun, params.ysun, params.zsun);
+   scene.add(light);
+   scene.add(lightPos);
+   TW.render();
+}   
 
-// 1. ADD A TRANSPARENT GLOBE AROUND THE SCENE
-var globeMaterial = new THREE.MeshBasicMaterial({color: 0xffffff, transparent: true, opacity: 0.8});
-var globe = new THREE.Mesh(new THREE.SphereGeometry(8.7, 32, 32, 0, 2*Math.PI, -Math.PI/3), globeMaterial);
-scene.add(globe);
-
-// 2. ADD A BASE TO HOLD THE GLOBE
-var baseMaterial = new THREE.MeshBasicMaterial({color: 0x000000});
-var base = new THREE.Mesh(new THREE.CylinderGeometry(9, 9, 0.5, 32), baseMaterial);
-base.position.y = -9;
-scene.add(base);
-
-// 3. ADD SNOW TO THE BASE OF THE GLOBE
-var snowBaseMaterial = new THREE.MeshBasicMaterial({color: 0xffffff});
-var snowBase = new THREE.Mesh(new THREE.CircleGeometry(9, 32), snowBaseMaterial);
-snowBase.position.y = -9.25;
-snowBase.rotation.x = -Math.PI/2;
-scene.add(snowBase);
-
-// 4. ADD SNOW INSIDE THE GLOBE
-addSnow(1000, 8.5, 0);
-
-var loader = new THREE.FontLoader();
-loader.load('Week 11/transparency/fonts/gentilis_bold.typeface.json', function(font) {
-    var textGeometry = new THREE.TextGeometry('my town', {
-        font: font,
-        size: 1,
-        height: 0.1,
-    });
-    var textMaterial = new THREE.MeshBasicMaterial({color: 0x000000});
-    var textMesh = new THREE.Mesh(textGeometry, textMaterial);
-    textMesh.position.set(-3, 3, 0);  // Adjust these values to position the text on the sign
-    scene.add(textMesh);
-});
-
+var gui = new dat.GUI();
+gui.add(params, 'xsun', -10, 10).onChange(shiftSun);
+gui.add(params, 'ysun', 0, 20).onChange(shiftSun);
+gui.add(params, 'zsun', -10, 10).onChange(shiftSun);
 
 TW.render();

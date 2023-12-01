@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Textured Barn</title>
+</head>
+<body>
+
+<script src="../lib/three-r95.all.js"></script>
+<script src="../lib/OrbitControls-r95.js"></script>
+<script src="../lib/tw.js"></script>
+<script src="../lib/dat.gui-r95.js"></script>
+
+<script src="textured-barn-given.js"></script>
+<script src="barn.js"></script>
+
+<style>
+    section {
+        display: inline-block;
+        vertical-align: top;
+    }
+    #canvasParent { width: 810px; }
+    #faceColors { width: 200px; }
+    canvas { width: 800px; height: 500px; border: 2px solid teal; }
+</style>
+
+</body>
+
+<h1>Texture-mapped Barn</h1>
+
+<section id="canvasParent"></section>
+<section id="facecolors"></section>
+
+<div><pre id="geometry"></pre></div>
+
+<script>
+    texturedBarnScene({parentID: 'canvasParent'});
+</script>
+
+</html>

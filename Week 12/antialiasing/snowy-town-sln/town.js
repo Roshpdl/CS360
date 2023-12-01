@@ -5,9 +5,9 @@ var renderer = new THREE.WebGLRenderer();
 TW.mainInit(renderer,scene);
 
 TW.cameraSetup(renderer, scene,
-               {minx: -10, maxx: 10,
-                miny: -8, maxy: 12,
-                minz: -10, maxz: 10});
+               {minx: -5, maxx: 5,
+                miny: -5, maxy: 10,
+                minz: -5, maxz: 5});
 
 // used for tree trunk and sign
 var brownMat = new THREE.MeshBasicMaterial({color: THREE.ColorKeywords.brown});
@@ -99,81 +99,51 @@ var circle = new THREE.Mesh(new THREE.CircleGeometry(8.7,32),
 circle.rotation.x = -Math.PI/2;
 scene.add(circle);
 
-
-// ADD A SHINY, TRANSPARENT GLOBE AROUND THE SCENE
-
-// ADD A BASE TO HOLD THE GLOBE 
-
-// ADD A BASE OF SNOW TO THE BOTTOM PART OF THE GLOBE
-
-
-// add some lights to the scene
 var ambLight = new THREE.AmbientLight(0xffffff, 0.8);
 scene.add(ambLight);
 
-var spotLight = new THREE.SpotLight(0xffffff, 1, 0, Math.PI/30, 1);
-spotLight.position.set(10,20,25);
-scene.add(spotLight);
+// add snow to the town with THREE.Points
+var snowGeometry = new THREE.Geometry();
 
-var directLight = new THREE.DirectionalLight(0xffffff, 0.5);
-directLight.position.set(-20,30,10);
-scene.add(directLight);
+// create an array of 200 randomly positioned vertices
+for ( var i = 0; i < 200; i ++ ) {
+    var snow = new THREE.Vector3();
+    snow.x = 15*(Math.random()-0.5);
+    snow.y = 10+(10*Math.random());
+    snow.z = 15*(Math.random()-0.5);                     
+    snowGeometry.vertices.push( snow );
+}
 
-// addSnow() adds "numFlakes" snowflakes to a scene, randomly positioned within 
-// a sphere of the input radius, shifted vertically by the input yshift
-function addSnow (numFlakes, radius, yshift) {
-   var x, y, z, keepgoing, snowflake;
-   var snow = new THREE.MeshBasicMaterial({color: 0xffffff});
-   var scale = radius/0.5;    // adjust coordinates to size of sphere
-   for (var i = 0; i < numFlakes; i++) {
-      keepgoing = true;
-      while (keepgoing) {
-         x = Math.random()-0.5;
-         y = Math.random()-0.5;
-         z = Math.random()-0.5;
-         if (x*x + y*y + z*z < 0.25) {
-            keepgoing = false;
-            snowflake = new THREE.Mesh(new THREE.SphereGeometry(0.1),snow);
-            snowflake.position.set(scale*x, scale*y+yshift, scale*z);
-            scene.add(snowflake);
-         }
-      }
+var snowMaterial, snowField;
+                     
+var posY = 0;
+                     
+function snowStorm () {
+   if (snowField != null) {
+       scene.remove(snowField);
+   }
+   posY = posY - 1;
+   snowField = new THREE.Points( snowGeometry, snowMaterial );
+   snowField.position.set(0, posY, 0);
+   scene.add(snowField);
+   if (posY < -10) {
+       clearInterval(clock);
+   } else {
+       TW.render();
    }
 }
 
-// 1. ADD A TRANSPARENT GLOBE AROUND THE SCENE
-var globeMaterial = new THREE.MeshBasicMaterial({color: 0xffffff, transparent: true, opacity: 0.8});
-var globe = new THREE.Mesh(new THREE.SphereGeometry(8.7, 32, 32, 0, 2*Math.PI, -Math.PI/3), globeMaterial);
-scene.add(globe);
+// texture-map a snowflake image onto each point
+var loader = new THREE.TextureLoader();
 
-// 2. ADD A BASE TO HOLD THE GLOBE
-var baseMaterial = new THREE.MeshBasicMaterial({color: 0x000000});
-var base = new THREE.Mesh(new THREE.CylinderGeometry(9, 9, 0.5, 32), baseMaterial);
-base.position.y = -9;
-scene.add(base);
-
-// 3. ADD SNOW TO THE BASE OF THE GLOBE
-var snowBaseMaterial = new THREE.MeshBasicMaterial({color: 0xffffff});
-var snowBase = new THREE.Mesh(new THREE.CircleGeometry(9, 32), snowBaseMaterial);
-snowBase.position.y = -9.25;
-snowBase.rotation.x = -Math.PI/2;
-scene.add(snowBase);
-
-// 4. ADD SNOW INSIDE THE GLOBE
-addSnow(1000, 8.5, 0);
-
-var loader = new THREE.FontLoader();
-loader.load('Week 11/transparency/fonts/gentilis_bold.typeface.json', function(font) {
-    var textGeometry = new THREE.TextGeometry('my town', {
-        font: font,
-        size: 1,
-        height: 0.1,
-    });
-    var textMaterial = new THREE.MeshBasicMaterial({color: 0x000000});
-    var textMesh = new THREE.Mesh(textGeometry, textMaterial);
-    textMesh.position.set(-3, 3, 0);  // Adjust these values to position the text on the sign
-    scene.add(textMesh);
-});
-
-
-TW.render();
+var clock;
+              
+loader.load("snowFlake.png",
+      function (texture) {
+           texture.minFilter = THREE.NearestFilter;
+           texture.magFilter = THREE.NearestFilter;
+           snowMaterial = new THREE.PointsMaterial( { map: texture,
+                                                      blending: THREE.AdditiveBlending,
+                                                      size: 0.6} );
+           clock = setInterval(snowStorm, 200);
+      } );
